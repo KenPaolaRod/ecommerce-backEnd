@@ -31,7 +31,7 @@ const productsScheme = new mongoose.Schema({
   },
   pictures:{
     type: [String],
-    default: './../images/tops/top-ana-back.png' ,
+    default: 'https://codigogenesis.com/genesis/2022/04/imagen-placeholder-por-defecto-WooCommerce.png' ,
     require: [true, 'A product must have at least one picture']
   }
 });
