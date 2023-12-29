@@ -21,8 +21,25 @@ const UserScheme = new mongoose.Schema({
     required: [true, 'A User must have a password'],
     trim: true,
     minlength: 8
+  },
 
+  password:{
+    type: String,
+    required: [true, 'A User must have a password'],
+    trim: true,
+    minlength: 8
+  },
+
+  confirmPassword: {
+    type: String,
+    required: [true, 'A user must have a password'],
+    trim: true,
+    validate: function (el) {
+      return el === this.password
+    }, 
+    message: "passwords are not the same!!"
   }
+
 });
 
 const User = mongoose.model('User', UserScheme);
