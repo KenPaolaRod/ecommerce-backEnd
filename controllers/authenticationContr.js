@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const { promisify } = require('util')
 
 const siginToken = id => {
   return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -35,7 +36,7 @@ exports.signUp = async (req, res) => {
 };
 
 
-exports.logIn = async (req, res, next) => {
+exports.logIn = async (req, res) => {
   const {email, password} = req.body;
 
   try {
@@ -73,7 +74,38 @@ exports.logIn = async (req, res, next) => {
 } catch (err) {
   res.status(400).json({
     status: "Fail",
-    message: err || 'err'
+    message: err.message || 'Error during login'
   })
 }
 }
+
+//Authentication middleware
+exports.protect = async (req, res, next) => {
+  try {
+
+    let token;
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+       token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+      res.status(401).json({
+        status: 'Unauthorized',
+        message: 'IYou are not log in, please log in to access'
+      });
+    }
+
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    req.user = await User.findById(decoded.id);
+
+
+    next();
+  } catch (err) {
+    res.status(401).json({
+      status: 'Unauthorized',
+      message: 'Invalid token'
+    });
+  }
+};
