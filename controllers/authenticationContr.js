@@ -35,3 +35,45 @@ exports.signUp = async (req, res) => {
 };
 
 
+exports.logIn = async (req, res, next) => {
+  const {email, password} = req.body;
+
+  try {
+  // check if email or password exist
+  if(!email || !password) {
+    return (
+        res.status(400).json({
+        status: 'Unauthorized',
+        message: 'please provide an email and password'
+      })
+      )
+  }
+
+  // check if user exist and password is correct
+  const user = await User.findOne({email}).select('+password');
+
+  if (!user || !(await user.correctPassword(password, user.password))) {
+    return (
+      res.status(401).json({
+        status: 'Unauthorized',
+        message: 'incorrect email or password'
+      })  
+    )
+  }
+
+
+  // if everything is ok, send token to the client 
+
+  const token = siginToken(user._id)
+  res.status(200).json({
+    status: 'success',
+    token
+  })
+
+} catch (err) {
+  res.status(400).json({
+    status: "Fail",
+    message: err || 'err'
+  })
+}
+}

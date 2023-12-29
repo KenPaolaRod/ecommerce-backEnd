@@ -5,8 +5,8 @@ const authenticationContr = require('../controllers/authenticationContr')
 const router = express.Router();
 
 // router.post('/signup', authenticationContr.signUp)
-router.post('/signup', authenticationContr.signUp );
-// router.post('/signIn', authenticationContr.signIn );
+router.post('/signup', authenticationContr.signUp);
+router.post('/logIn', authenticationContr.logIn);
 
 
 router.route('/').get(userControllers.getAllUsers);

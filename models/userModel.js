@@ -28,7 +28,8 @@ const UserScheme = new mongoose.Schema({
     type: String,
     required: [true, 'A User must have a password'],
     trim: true,
-    minlength: 8
+    minlength: 8,
+    select: false
   },
 
   confirmPassword: {
@@ -53,6 +54,11 @@ UserScheme.pre('save', async function(next) {
 
   next();
 });
+
+// compare if the passwords of the person login and the passw of the db are the same
+UserScheme.methods.correctPassword = async function (candidatePassw, UserPassw) {
+  return await bcryptjs.compare(candidatePassw, UserPassw)
+}
 
 
 
