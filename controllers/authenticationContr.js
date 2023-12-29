@@ -32,4 +32,6 @@ exports.signUp = async (req, res) => {
       message: err || 'err'
     })
   }
-}
+};
+
+
