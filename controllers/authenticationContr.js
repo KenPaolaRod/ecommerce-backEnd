@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util')
+const cookie = require('cookie')
 
 const siginToken = id => {
   return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -62,13 +63,20 @@ exports.logIn = async (req, res) => {
     )
   }
 
-
-  // if everything is ok, send token to the client 
+  // set cookie
 
   const token = siginToken(user._id)
+
+  res.setHeader('Set-Cookie', cookie.serialize('jwt', token, {
+    httpOnly: true,
+    maxAge: 30 * 20 * 60 * 60, // 30 days
+    secure: process.env.NODE_ENV === !'development',
+    sameSite: 'strict',
+  }));
+  
   res.status(200).json({
     status: 'success',
-    token
+    
   })
 
 } catch (err) {
@@ -79,33 +87,30 @@ exports.logIn = async (req, res) => {
 }
 }
 
-//Authentication middleware
 exports.protect = async (req, res, next) => {
-  try {
-
     let token;
 
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-       token = req.headers.authorization.split(' ')[1];
-    }
+    // read the JWT from the cookie 
+    token = req.cookies.jwt;
+    if (token) {
+      try{
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        req.user = await User.findById(decoded.userId).select('-password')
+        next()
+      } catch (err) {
+        console.log(err);
 
-    if (!token) {
+        res.status(401).json({
+          status: "fail",
+          message: 'Token Fail!'
+        })
+      }
+      
+    } else {
       res.status(401).json({
-        status: 'Unauthorized',
-        message: 'IYou are not log in, please log in to access'
-      });
+        status: "fail",
+        message: 'Not authorized, no token!'
+      })
     }
-
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-    req.user = await User.findById(decoded.id);
-
-
-    next();
-  } catch (err) {
-    res.status(401).json({
-      status: 'Unauthorized',
-      message: 'Invalid token'
-    });
   }
-};
+
