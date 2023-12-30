@@ -1,6 +1,5 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
-const { promisify } = require('util')
 const cookie = require('cookie')
 
 const siginToken = id => {
@@ -85,6 +84,21 @@ exports.logIn = async (req, res) => {
     message: err.message || 'Error during login'
   })
 }
+}
+
+// LOGOUT USER
+
+exports.logOut = async (req, res) => {
+  // DELETE COOKIE
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0),
+    path: '/api/users'
+  });
+
+  res.status(200).json({
+    message: 'LogOut successfully'
+  })
 }
 
 exports.protect = async (req, res, next) => {
