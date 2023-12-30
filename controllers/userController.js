@@ -41,21 +41,25 @@ exports.updateUser = async (req, res) => {
 }
 
 exports.getUser = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
+  const user = await User.findById(req.user._id);
+  if(user) {
+    // console.log(req.user);
 
     res.status(200).json({
       status: "success",
       data: {
         user
       }
-    })
-  } catch (err) {
-    res.status(404).json({
-      status: "Fail",
-      message: err || 'error'
-    })
-  }
+    }) 
+  } else {
+    res.status(400).json({
+     status: "Fail",
+     message: err || 'error'
+   })
+ }
+
+    // const user = await User.findById(req.params.id);  
+
 }
 
 exports.deleteUser = async (req, res) => {

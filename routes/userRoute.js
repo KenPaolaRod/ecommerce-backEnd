@@ -8,10 +8,11 @@ const router = express.Router();
 router.post('/signup', authenticationContr.signUp);
 router.post('/logIn', authenticationContr.logIn);
 router.post('/logout', authenticationContr.logOut);
+router.get('/profile', authenticationContr.protect, userControllers.getUser);
 
 
 
 router.route('/').get(authenticationContr.protect, userControllers.getAllUsers);
-router.route('/:id').patch(userControllers.updateUser).get(userControllers.getUser).delete(userControllers.deleteUser);
+router.route('/:id').patch(userControllers.updateUser).delete(userControllers.deleteUser);
 
 module.exports = router
