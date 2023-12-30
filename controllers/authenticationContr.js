@@ -9,16 +9,14 @@ const siginToken = id => {
 }
 
 exports.signUp = async (req, res) => {
-
   try {
-
     const newUser = await User.create({
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
       confirmPassword: req.body.confirmPassword,
-      passwordChangedAt: req.body.passwordChangedAt,
     });
+    const {password, ...userData} = newUser._doc;
   
     const token = siginToken(newUser._id);
 
@@ -32,10 +30,8 @@ exports.signUp = async (req, res) => {
  
     res.status(201).json({
       status: 'success',
-      data: { newUser },
+      data: { userData },
     });
-
-
   } catch (err) {
     res.status(400).json({
       status: "Fail log in",
@@ -56,7 +52,7 @@ exports.logIn = async (req, res) => {
         status: 'Unauthorized',
         message: 'please provide an email and password'
       })
-      )
+    )
   }
 
   // check if user exist and password is correct
@@ -85,7 +81,6 @@ exports.logIn = async (req, res) => {
   
   res.status(200).json({
     status: 'success',
-    
   })
 
 } catch (err) {
@@ -116,6 +111,7 @@ exports.protect = async (req, res, next) => {
 
     // read the JWT from the cookie 
     token = req.cookies.jwt;
+
     if (token) {
       try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET)

@@ -16,12 +16,7 @@ const UserScheme = new mongoose.Schema({
     match: [
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       'El formato de correo electrónico {VALUE} no es válido.'
-    ]  },
-  password:{
-    type: String,
-    required: [true, 'A User must have a password'],
-    trim: true,
-    minlength: 8
+    ]  
   },
 
   password:{
