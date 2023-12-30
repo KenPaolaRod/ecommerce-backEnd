@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
-const cookie = require('cookie')
+const cookie = require('cookie');
 
 const siginToken = id => {
   return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -22,14 +22,23 @@ exports.signUp = async (req, res) => {
   
     const token = siginToken(newUser._id);
 
+    res.setHeader('Set-Cookie', cookie.serialize('jwt', token, {
+      httpOnly: true,
+      maxAge: 30 * 20 * 60 * 60, // 30 days
+      secure: process.env.NODE_ENV === !'development',
+      sameSite: 'strict',
+    }));
+
+ 
     res.status(201).json({
-      status: "sucessful",
-      token,
-      data: {newUser}
-    })
+      status: 'success',
+      data: { newUser },
+    });
+
+
   } catch (err) {
     res.status(400).json({
-      status: "Fail",
+      status: "Fail log in",
       message: err || 'err'
     })
   }
@@ -72,6 +81,7 @@ exports.logIn = async (req, res) => {
     secure: process.env.NODE_ENV === !'development',
     sameSite: 'strict',
   }));
+
   
   res.status(200).json({
     status: 'success',

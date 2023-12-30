@@ -19,20 +19,6 @@ exports.getAllUsers = async (req, res) => {
   }
 }
 
-exports.createUser = (req, res) => {
-  try {
-    res.status(200).json({
-      status: "sucessful",
-      data: {newUser}
-    })
-  } catch (err) {
-    res.status(400).json({
-      status: "Fail",
-      message: err || 'error'
-    })
-  }
-}
-
 exports.updateUser = async (req, res) => {
   try {
     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
