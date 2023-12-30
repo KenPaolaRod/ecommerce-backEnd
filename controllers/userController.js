@@ -21,7 +21,7 @@ exports.getAllUsers = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
       runValidators: true
     });
@@ -57,9 +57,6 @@ exports.getUser = async (req, res) => {
      message: err || 'error'
    })
  }
-
-    // const user = await User.findById(req.params.id);  
-
 }
 
 exports.deleteUser = async (req, res) => {
