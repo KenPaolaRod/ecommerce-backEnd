@@ -21,15 +21,15 @@ exports.signUp = async (req, res) => {
     const token = siginToken(newUser._id);
 
     res.setHeader('Set-Cookie', cookie.serialize('jwt', token, {
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 30 * 20 * 60 * 60, // 30 days
       secure: process.env.NODE_ENV === !'development',
-      sameSite: 'none',
+      sameSite: 'strict',
     }));
-
  
     res.status(201).json({
       status: 'success',
+      toke: token,
       data: { userData },
     });
   } catch (err) {
@@ -68,19 +68,18 @@ exports.logIn = async (req, res) => {
   }
 
   // set cookie
-
   const token = siginToken(user._id)
 
   res.setHeader('Set-Cookie', cookie.serialize('jwt', token, {
-    httpOnly: false,
+    httpOnly: true,
     maxAge: 30 * 20 * 60 * 60, // 30 days
     secure: process.env.NODE_ENV === !'development',
-    sameSite: 'none',
+    sameSite: 'strict',
   }));
-
   
   res.status(200).json({
     status: 'success',
+    token: token
   })
 
 } catch (err) {
