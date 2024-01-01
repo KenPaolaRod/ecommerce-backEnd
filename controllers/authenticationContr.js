@@ -21,7 +21,7 @@ exports.signUp = async (req, res) => {
     const token = siginToken(newUser._id);
 
     res.setHeader('Set-Cookie', cookie.serialize('jwt', token, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: 30 * 20 * 60 * 60, // 30 days
       secure: process.env.NODE_ENV === !'development',
       sameSite: 'strict',
