@@ -24,7 +24,7 @@ exports.signUp = async (req, res) => {
       httpOnly: false,
       maxAge: 30 * 20 * 60 * 60, // 30 days
       secure: process.env.NODE_ENV === !'development',
-      sameSite: 'strict',
+      sameSite: 'none',
     }));
 
  
@@ -75,7 +75,7 @@ exports.logIn = async (req, res) => {
     httpOnly: false,
     maxAge: 30 * 20 * 60 * 60, // 30 days
     secure: process.env.NODE_ENV === !'development',
-    sameSite: 'strict',
+    sameSite: 'none',
   }));
 
   
