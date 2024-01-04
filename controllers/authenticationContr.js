@@ -68,7 +68,10 @@ exports.logIn = async (req, res) => {
   }
 
   // set cookie
-  const token = siginToken(user._id)
+  const token = siginToken(user._id);
+
+  // getting user loged in name
+  const userName = user.name
 
   res.setHeader('Set-Cookie', cookie.serialize('jwt', token, {
     httpOnly: true,
@@ -79,7 +82,8 @@ exports.logIn = async (req, res) => {
   
   res.status(200).json({
     status: 'success',
-    token: token
+    token: token,
+    userName
   })
 
 } catch (err) {
