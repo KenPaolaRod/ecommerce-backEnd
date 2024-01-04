@@ -6,7 +6,7 @@ const app = require('./index');
 
 const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD)
 
- mongoose.connect(DB).then(() => console.log('conected'))
+ mongoose.connect(DB).then(() => console.log('connected'))
 
 
 const port = process.env.PORT || 2000;
